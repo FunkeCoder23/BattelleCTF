@@ -40,7 +40,7 @@ This function opens up `humpty-botched.png` (where I noticed my mistake with pas
 
 ### Stuck
 
-At this point, I was stuck overnight. When I got back to it I had a lot of the pieces in place, but not sure quite where to go from there. I ran `hexdump` on the `og.png` and noticed the `PNG   IHDR` line while scrolling through. This gave me the idea that this was definitely some kind of misordering, which then made sense of `attempt_fix`'s stack pointers and misordered writes. 
+At this point, I was stuck overnight. When I got back to it I had a lot of the pieces in place, but not sure quite where to go from there. I ran `binwalk` on the png, and found there was PNG data contained in it, so I tried with `-e` to extract it but no dice. I ran `hexdump` on the `og.png` and did find the `PNG   IHDR` line while scrolling through. This gave me the idea that this was definitely some kind of misordering, which then made sense of `attempt_fix`'s stack pointers and misordered writes. 
 
 This just left the random bits. I decided to create an empty file to pass in, just to see how the output was changed. This turned out to be extremely helpful, as I could see that my size 0 dummy file was also transformed into a 400400 byte data file, exactly the same size as the original `humpty-botched.png`. I ran `hexdiff` on my new `humpty_botched` and `og` and noticed that the 'random' bits, also happened to be the exact same, in the exact same spot (Seed your randoms, folks). With these two peieces of information, I revisited `apply_glue` and realized it was appending 40 garbage bytes in between the 40kb data bytes. Boom. Now we're ready to reverse it.
 
