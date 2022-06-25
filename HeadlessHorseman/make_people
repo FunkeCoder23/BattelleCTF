@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+cd distributed_files
+mkdir -p people
+for f1 in $(ls body_bag)
+do
+    for f2 in $(ls head_bag)
+    do
+        file=$f2\_$f1
+        echo making $file
+        cat head_bag/$f2 > people/$file
+        cat body_bag/$f1 >> people/$file
+        chmod +x head_bag
+    done
+done
