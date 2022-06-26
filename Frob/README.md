@@ -77,7 +77,8 @@ The reason that my original and encrypted data appeared the same is *drumroll pl
 I'm now able to determine a 50% chance of where each byte position is, 
 
 unfrobbing the included `encrypted.txt` gives a hexdump of
-```hex
+
+```brainfuck
 00000000  2d 2d 2d 2b 2d 2b 2b 2e  2b 2b 2b 2b 2b 2b 2d 2d  |---+-++.++++++--|
 00000010  2b 2b 2b 2b 2d 2d 2b 2b  2d 2b 2d 2d 2b 2d 2b 2b  |++++--++-+--+-++|
 00000020  3c 2b 2d 2d 2b 2b 2b 2b  2b 2b 2b 2b 2b 2e 2b 2d  |<+--+++++++++.+-|
