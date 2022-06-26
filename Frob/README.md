@@ -1,14 +1,16 @@
-## What the Frob
+[TOC]
 
-```text
-What the.. Frob?
-```
+# What the Frob
+
+> What the.. Frob?
+
+## First Thoughts
 
 Included in `whatthefrob.zip`, we have `wtfrob` and `encrypted.txt`
 
 `encrypted.txt` contains non-printable binary, which (after some experimentation) get's overwritten with our `wtfrob` program.
 
-### Ghidra
+## Ghidra
 
 Opening up our binary in Ghidra, we can see that the program reads from `data.txt` and writes to `encrypted.txt`.
 
@@ -36,13 +38,13 @@ DESCRIPTION
        XOR constant is fixed, and is suitable only for hiding strings.
 ```
 
-### Main
+## Main
 
 In the `main` function, we can see that the random seed is fixed, which should help with decryption quite a bit. 
 
 The `for` loop 'appears' to be doing nothing... none of that data looks to be used afterwards, but we can test this later.
 
-### strfry
+## strfry
 
 Based on the link provided, we can see a general outline for the standard strfry function, and use that to reverse the author's custom version.
 
@@ -58,7 +60,7 @@ The version already attached to this bug report returns all cases with a
 correct distribution.
 ```
 
-### Frobbing some data
+## Frobbing some data
 
 As we've seen, the rand function is seeded with a constant, so we can get the exact same permutation out of every run, and frobbing consists of a reversible `^ 42`. We should be able to reverse the permutation by passing in a series of bytes `0x00 -> 0xff`, running it through the program, and then `xor`ing again and seeing which position each is in.
 

@@ -1,18 +1,16 @@
-## Dragons and Dwarves
+# Dragons and Dwarves
 
-```text
-A wise dragon decided that dwarves were too easily stealing his treasure while he slept. To thwart these villains he has placed his prized possessions inside a magic portal that transmutes the valuables into worthless junk unless one knew the magic pass phrase. The dragon is so confident of his new scheme that he taunts dwarves daring them to try to steal his treasure.
+> A wise dragon decided that dwarves were too easily stealing his treasure while he slept. To thwart these villains he has placed his prized possessions inside a magic portal that transmutes the valuables into worthless junk unless one knew the magic pass phrase. The dragon is so confident of his new scheme that he taunts dwarves daring them to try to steal his treasure.
 
-The clever dwarves figured out that there were two obstacles the dragon used to prevent access to his treasure. The first one was easily determined because every time the dwarves tried to throw the worthless junk into the magic portal it spit them back out with a flash of a lightning bolt. The dwarves, being masters of ores, gems, and precious things figured out how to fix the junk. Once the magic portal accepted the junk they then realized there was a fundamental flaw in the ancient magic portal the dragon used and leveraged knowledge and wisdom of their great oracle Goggle to crack the pass phrase and recover the treasure.
+> The clever dwarves figured out that there were two obstacles the dragon used to prevent access to his treasure. The first one was easily determined because every time the dwarves tried to throw the worthless junk into the magic portal it spit them back out with a flash of a lightning bolt. The dwarves, being masters of ores, gems, and precious things figured out how to fix the junk. Once the magic portal accepted the junk they then realized there was a fundamental flaw in the ancient magic portal the dragon used and leveraged knowledge and wisdom of their great oracle Goggle to crack the pass phrase and recover the treasure.
 
-We humans want our share of the dragon's loot, but since relations between dwarves and humans is poor, they are unwilling to share any additional information. You must figure out how the dwarves were able to make use of the magic portal and to find the tool they used to access and replace the dragon's valuables with real junk.
+> We humans want our share of the dragon's loot, but since relations between dwarves and humans is poor, they are unwilling to share any additional information. You must figure out how the dwarves were able to make use of the magic portal and to find the tool they used to access and replace the dragon's valuables with real junk.
 
-We obtained a copy of the dragon's message to the dwarves and have included it in the provided bundle.
+> We obtained a copy of the dragon's message to the dwarves and have included it in the provided bundle.
 
-Prove that you stole the dragon's valuables by swapping them with some junk of your own. When done correctly, the dragon will wake up to inspect his valuables using his magic pass phrase (aka password) and find in its place junk (or a taunting message of your own).
-```
+> Prove that you stole the dragon's valuables by swapping them with some junk of your own. When done correctly, the dragon will wake up to inspect his valuables using his magic pass phrase (aka password) and find in its place junk (or a taunting message of your own).
 
-### Contents
+## First Thoughts
 
 In this challenge, we have a text file `Dwarf_Message` containing:
 
@@ -30,7 +28,7 @@ Bronze Dragon
 
 and a `junk` file, which appears to be a zip archive - password protected.
 
-### Junk
+## Junk
 
 Dumping the hex from `junk` we can see a few file names 
 
@@ -90,7 +88,7 @@ Dumping the hex from `junk` we can see a few file names
 
 We can see it's a zip file `PK`, containing `Dwarf_Message`, and `Stash_BronzeDragon`. Interesting, as we already have a Dwarf_Message file.
 
-### PKCrack
+## PKCrack
 
 There's a github repo wit a potentially useful program, [PKCrack](https://github.com/keyunluo/pkcrack), it requires an encrypted zip arcive (done) and a zip containing an unencrypted copy of a file in the encrypted zip. If Dwarf_Message *is* in fact the same, this could be useful.
 
@@ -98,7 +96,7 @@ After running the command, we hit on a key triplet... unfortunately, Stash_Bronz
 
 We did incorrectly zip our `Dwarf_Message` the first time though, using `zipinfo` we can see that junk is zipped with `defX` or maximum compression `zip -9`. After rezipping Dwarf_Message, we'll try to crack it again
 
-## Aftermath
+# Aftermath
 
 I think the challenge is broken... No that's not an excuse, I was able to unzip the new Dwarf_Message completely, but I keep getting a deflate error on the `Stash`. After some googling, I *did* find someone who followed the same steps, got the exact same key triplet, and was successful - in 2017. Using their stash contents:
 

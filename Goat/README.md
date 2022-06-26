@@ -1,7 +1,8 @@
-## Feed the Magical Goat
+[TOC]
 
-### Intro
-Once upon a time, there was a little reverse engineer who found a special bell. When the bell was struck, they say a magical billy goat appeared looking for food. Everyone knows billy goats will eat anything, but this is all the little reverse engineer had lying around.
+# Feed the Magical Goat
+
+> Once upon a time, there was a little reverse engineer who found a special bell. When the bell was struck, they say a magical billy goat appeared looking for food. Everyone knows billy goats will eat anything, but this is all the little reverse engineer had lying around.
 
 | .Inorganic  | .Magical objects        | .Organic    | .Sources of infinite energy  |
 | ----------- | ----------------------- | ----------- | ---------------------------- |
@@ -10,13 +11,13 @@ Once upon a time, there was a little reverse engineer who found a special bell. 
 | Can: `@`    | Potion: `p`             | Plant: `;`  | Dipping bird: `r`            |
 | Rug: `_`    | Wizard's Staff:  ` \| ` | Seed: `.`   | Perpetual motion device: `H` |
 
-Figure out how to feed and please the billy goat using the 16 items listed here. You only have one of each
+> Figure out how to feed and please the billy goat using the 16 items listed here. You only have one of each
 
-## Steps
+## First Thoughts
 
 So the clue hidden in here is `angr`, not quite a mispelling but a hint to a ["platform-agnostic binary analysis framework. "](https://github.com/angr/angr)
 
-### Ghidra
+## Ghidra
 
 Before learning angr, let's see if we can take a look at the binary to figure out how it works.
 
@@ -28,30 +29,30 @@ There are four checks:
 3. `fill_omasum`
 4. `fill_abomasum`
 
-#### Fill Rumen
+## Fill Rumen
 
 `fill_rumen` is relatively straight forward, we can see four `if` statements for each of the input array, following these we see that the beginning of the input should be `,;.u`
 
-#### Fill Reticulum
+## Fill Reticulum
 
 `fill_reticulum` is done the same way, giving us the input of `P@h_`
 
 
-#### Fill Omasum
+## Fill Omasum
 
 Again, with `fill_omasum`, giving `|pnw`
 
-#### Fill Abomasum
+## Fill Abomasum
 
 Our first slight 'hiccup' in `fill_abomasum`, the first input is 'obfuscated' with a bitwise `&`. However, the left hand side of the expression is all `1s` except for the MSB, and the right hand side side is just `H`. Since we haven't used `H` yet, we can clearly see that that's the expected value.
 
 With the rest, we see `HBcr`
 
-#### Give Offering
+## Give Offering
 
 `give_offering` takes `"chow.down"` hard-coded as an input, and opens the file. If no file is found, it deletes the executable. It then reads 16 bytes/characters from the file, however if you feed Billy an `@` you will get a clue. Let's try, just to see.
 
-##### Hint
+### Hint
 
 ```text
 You ring the chow bell...
@@ -73,7 +74,7 @@ At least, that's what we believe.
 You should cover your web cam! >.<
 ```
 
-#### Solution Attempt 1
+## Solution Attempt 1
 
 `,;.uP@h_|pnwHBcr`
 
@@ -92,7 +93,7 @@ flag{l1vn_th4t_goat_l1f3}
 
 `flag{l1vn_th4t_goat_l1f3}`
 
-### Angr
+## Angr
 
 Let's try that again in Angr, just to learn a new framework
 

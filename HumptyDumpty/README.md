@@ -1,4 +1,10 @@
-## Steps
+[TOC]
+
+# Humpty Dumpty's Fall
+
+> Humpty Dumpty sat on a wall.... you know the rest. Can you figure out how the kings men and horses botched the repair on poor humpty?
+
+## First Thoughts
 
 I first decided to run `file` on everything.
 
@@ -21,24 +27,24 @@ Some interesting func names, `fall_and_shatter`, `attempt_fix`, `apply_glue`.
 Let's start with `main`
 
 
-### Main
+## Main
 Not too bad, this just prints the usage we saw earlier, and if run *correctly*, then will call fall and shatter. After initializing the known `int argc, char** argv` we can see that it's passing the filename into `fall_and_shatter`
 
-### Fall and Shatter
+## Fall and Shatter
 
 Opening the FnS function, we see 10 `void*'s` which get 40kb malloc'd each, and a `FILE*` which reads from the filename passed earlier. The file is then split into those ten 40kb chunks before `attempt_fix` is called.
 
-### Attempt Fix
+## Attempt Fix
 
-Briefly looking at `attempt_fix` we see a `FILE*` and 10 `stack*'s`. It did take some googling to figure out why it was named `in_stack_000000##` but it turns out this just refers to things in the call stack outside of the function's frame (in this case, the pointers from FnS).
+Briefly looking at `attempt_fix` we see a `FILE*` and 10 `stack*'s`. It did take some googling to figure out why it was named `in_stack_000000#` but it turns out this just refers to things in the call stack outside of the function's frame (in this case, the pointers from FnS).
 
 This function opens up `humpty-botched.png` (where I noticed my mistake with passing it in originally), writes some, calls `apply_glue` on the output, and repeats. 
 
-### Apply Glue
+## Apply Glue
 
 `apply_glue` was a tricky function for me. I could see that it was writing 4 sets of random bytes, but at first I believed it was overwriting data. The other confusing part for me was the `in_FS_OFFSET + 0x28`, however after seeing that it caused a stack_check_fail, and some quick googling, I determined this was just a `stack_canary` in order to prevent stack smashing.
 
-### Stuck
+## Stuck
 
 At this point, I was stuck overnight. When I got back to it I had a lot of the pieces in place, but not sure quite where to go from there. I ran `binwalk` on the png, and found there was PNG data contained in it, so I tried with `-e` to extract it but no dice. I ran `hexdump` on the `og.png` and did find the `PNG   IHDR` line while scrolling through. This gave me the idea that this was definitely some kind of misordering, which then made sense of `attempt_fix`'s stack pointers and misordered writes. 
 

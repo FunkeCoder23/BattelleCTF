@@ -1,6 +1,13 @@
 [TOC]
 
-## Steps
+# The Legend of the Headless Horseman
+
+> A mysterious figure has been terrorizing the village of Sleepy Hollow. He rides a massive horse, swings a mighty scythe and has been collecting heads from any who draw near. A group of locals, Ichabod Crane, Katrina Van Tassel, and Abraham "Brom Bones" Van Brunt have been working to discover the secret behind this mysterious menace, but just as they were on the verge of putting the pieces together, the Headless Horseman struck! All that are left of the heroes are some unidentifiable bodies with no heads!
+
+> Can you help put our heroes back together, and figure out what secrets they uncovered? You'll first need to bargain with the horseman... bring some pumpkins with you.. a LOT of pumpkins.
+
+
+## First Thoughts
 
 We follow the usual steps, running `file` on everything in the zip.
 
@@ -9,7 +16,7 @@ distributed_files/body_bag:          directory
 distributed_files/headless_horseman: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=c27bbcbb5c6cca6f828ac55c4a67aef8ba293156, for GNU/Linux 3.2.0, not stripped
 distributed_files/README.txt:        ASCII text
 
-### body_bag/
+## body_bag/
 distributed_files/body_bag/bloated_body:     data
 distributed_files/body_bag/decomposing_body: Apple DiskCopy 4.2 image \226\007, 78317568 bytes, 0x80130000 tag size, GCR CLV ssdd (400k), 0x0 format
 distributed_files/body_bag/rotting_body:     data
@@ -35,7 +42,7 @@ Can you help put our heros back together, and figure out what secrets they uncov
 
 We also have a binary, and 3 data (well technically, 1 is an `Apple DiskCopy`... but we'll leave that for later)
 
-### Application
+## Application
 
 Running `headless_horseman` gives us the following output:
 
@@ -57,37 +64,37 @@ the figure turns to you and draws his sword... time to leave! make sure to bring
 
 Clearly, we're not going to bruteforce all of the possibilities, so let's take a look at the binary.
 
-### Ghidra
+## Ghidra
 
-#### Main
+## Main
 
 In our main function, we have `print_intro` which (shockingly) prints the intro text, and an int which gets set by `offer_pumpkins` and is passed into `count_offering`,
 
-#### Offer Pumpkins
+## Offer Pumpkins
 
 `offer_pumpkins` appears to simply read in and return our input, and contains a `stack_canary` that we saw previously in HumptyDumpty.
 
-#### Main pt2
+## Main pt2
 
 With this information, we can see that the int is some kind of `pumpkinCount` which is read in and passed to `count_offering` 
 
-#### Count Offering
+## Count Offering
 
 Here's where we get to the meat of the application. We can see that our `pumpkinCount` needs to be higher than 0, and then get's passed into `first_count`
 
-#### First Count
+## First Count
 
 Easy, `return pumpkinCount >> 0x10 == 0xdead;`, reversing that operation gives us `0xdead << 0x10 = 3735879680`.
 
 We can pass that as our `pumpkinCount` which outputs the previous text followed by "The figure turns to you and nods, pulling out his bag of heads, dumping them on the ground in front of you".
 
-#### Second Count
+## Second Count
 
 Even easier, `return pumpkinCount == 0xface;`
 
 Combining these two give us our final 'pumpkinCount' of `0xdeadface = 3735943886` 
 
-#### Release the Heads
+## Release the Heads
 
 Entering our new `pumpkinCount` we get the final part of the message
 
@@ -118,7 +125,7 @@ and a quick attempt at importing into ghidra shows 3 of type `x86:LE:64`, one `A
  * MIPS-32:BE : moldy 
 
 
-### QEMU
+## QEMU
 
 I've never messed with qemu before, but it's an emulator for different architectures, given a disk image. Now it's starting to make sense why we have an Apple DiskCopy body, and I'm going to assume that the other bodies are similarly disk images.
 
@@ -177,7 +184,7 @@ virtual size: 512 B (512 bytes)
 disk size: 4 KiB
 ```
 
-### Another thought
+## Another thought
 
 Heads and bodies go together... that seems natural, each of the heads has ELF magic bits, and the rest of them seem to contain other expected binary data such as `.rodata`
 
@@ -266,11 +273,11 @@ However, our prior test was not for nought, since it confirmed 2/3 as valid prog
 
 and TADA we can now import them into ghidra
 
-### Dessicated Head Decomposing Body
+## Dessicated Head Decomposing Body
 
 `Main` -> `Katrina`, easy
 
-#### Katrina
+## Katrina
 
 `dessicated_head_decomposing_body`
 
@@ -290,7 +297,7 @@ What should Katrina use as the decryption key? Sleepy Hollow
 really_loves_
 ```
 
-#### Brom
+## Brom
 
 `shrunken_head_rotting_body`
 
@@ -328,7 +335,7 @@ Brom's eyes glaze over for a second and he writes down this number: 0x44414544
 pumpkin_pie}
 ```
 
-### Ichabod Crane
+## Ichabod Crane
 
 `moldy_head_bloated_body`
 
@@ -363,6 +370,6 @@ flag{the_horseman_just_
 
 and with that we have our final flag! `flag{the_horseman_just_`
 
-## Solution
+# Solution
 
 `flag{the_horseman_just_really_loves_pumpkin_pie}`
