@@ -42,3 +42,7 @@ Now for the full speed test (in python, so takes a minute).
 Bingo!
 
 We can see in our output file binary (or using the `file` command) that it's a png image, changing the extension and opening it up gives us our nice little CAN of (Bit) Stuffing!
+
+## Flag
+
+![Flag](out.png)

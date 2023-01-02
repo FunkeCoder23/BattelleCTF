@@ -89,3 +89,9 @@ with open("fixed.png","ab") as out:
     for fix in fixed:
         out.write(fix)
 ```
+
+## Flag
+
+![Flag](HumptyDumpty.png)
+
+`flag{AWL-thuH-KNGz-houRsez}`
