@@ -21,7 +21,7 @@ That overwrote the original picture :/
 
 I re-grabbed the original png just to make sure I didn't mess with anything and call that `og.png` so I don't accidentally overwrite it again.
 
-I decided to open up Ghidra and load in fall-n-botch. So far so good, pretty easy decomp. 
+I decided to open up Ghidra and load in fall-n-botch. So far so good, pretty easy decomp.
 Some interesting func names, `fall_and_shatter`, `attempt_fix`, `apply_glue`.
 
 Let's start with `main`
@@ -48,17 +48,17 @@ This function opens up `humpty-botched.png` (where I noticed my mistake with pas
 
 At this point, I was stuck overnight. When I got back to it I had a lot of the pieces in place, but not sure quite where to go from there. I ran `binwalk` on the png, and found there was PNG data contained in it, so I tried with `-e` to extract it but no dice. I ran `hexdump` on the `og.png` and did find the `PNG   IHDR` line while scrolling through. This gave me the idea that this was definitely some kind of misordering, which then made sense of `attempt_fix`'s stack pointers and misordered writes. 
 
-This just left the random bits. I decided to create an empty file to pass in, just to see how the output was changed. This turned out to be extremely helpful, as I could see that my size 0 dummy file was also transformed into a 400400 byte data file, exactly the same size as the original `humpty-botched.png`. I ran `hexdiff` on my new `humpty_botched` and `og` and noticed that the 'random' bits, also happened to be the exact same, in the exact same spot (Seed your randoms, folks). With these two peieces of information, I revisited `apply_glue` and realized it was appending 40 garbage bytes in between the 40kb data bytes. Boom. Now we're ready to reverse it.
+This just left the random bits. I decided to create an empty file to pass in, just to see how the output was changed. This turned out to be extremely helpful, as I could see that my size 0 dummy file was also transformed into a 400400 byte data file, exactly the same size as the original `humpty-botched.png`. I ran `hexdiff` on my new `humpty_botched` and `og` and noticed that the 'random' bits, also happened to be the exact same, in the exact same spot (Seed your randoms, folks). With these two pieces of information, I revisited `apply_glue` and realized it was appending 40 garbage bytes in between the 40kb data bytes. Boom. Now we're ready to reverse it.
 
 I know I'm grabbing 40kb at a time, so I set that as my STACK_SIZE (horrible naming, i'm sure, but it works).
 
 I set up an empty array to store my 10 sets of bytes in, and read in the file, ignoring the 40 garbage bytes that follow each set.
 
-With that ready to manuipulate, I look through `attempt_fix` and match up my output stack, with the original
+With that ready to manipulate, I look through `attempt_fix` and match up my output stack, with the original
 
 `08=0, 01=1, 18=2, etc.`
 
-After running, the original image is retrieved. 
+After running, the original image is retrieved.
 
 ```py
 STACK_SIZE=40000

@@ -1,11 +1,11 @@
+# The Legend of the Headless Horseman
+
 [TOC]
 
-# The Legend of the Headless Horseman
 
 > A mysterious figure has been terrorizing the village of Sleepy Hollow. He rides a massive horse, swings a mighty scythe and has been collecting heads from any who draw near. A group of locals, Ichabod Crane, Katrina Van Tassel, and Abraham "Brom Bones" Van Brunt have been working to discover the secret behind this mysterious menace, but just as they were on the verge of putting the pieces together, the Headless Horseman struck! All that are left of the heroes are some unidentifiable bodies with no heads!
 
 > Can you help put our heroes back together, and figure out what secrets they uncovered? You'll first need to bargain with the horseman... bring some pumpkins with you.. a LOT of pumpkins.
-
 
 ## First Thoughts
 
@@ -108,7 +108,8 @@ maybe you can use the fabled Quick and Efficient Murder Un-Doer(QEMU for short)
 ```
 
 and another data dump of `heads`
-```
+
+```text
 dessicated_head: ERROR: error reading
 fetid_head:      ELF 64-bit LSB shared object, x86-64, version 1 (SYSV)
 moldy_head:      ERROR: error reading
@@ -120,10 +121,9 @@ swollen_head:    ELF 64-bit LSB shared object, x86-64, version 1 (SYSV)
 and a quick attempt at importing into ghidra shows 3 of type `x86:LE:64`, one `ARM:LE:32`, one `MIPS:BE:32`, and one `X86:LE:32`... unfortunately, for some reason, none were imported into ghidra, but we can try and run the files themselves within qemu. Since, dessicated and moldy had errors reading, we can probably assume one is MIPS and the other ARM
 
 * Note from future: Moldy head is BE, and dessicated is LE, giving us 
- * x86-64:LE  : fetid, putrid, swollen
- * ARM-32:LE  : dessicated 
- * MIPS-32:BE : moldy 
-
+* x86-64:LE  : fetid, putrid, swollen
+* ARM-32:LE  : dessicated
+* MIPS-32:BE : moldy
 
 ## QEMU
 
@@ -221,7 +221,7 @@ we can quickly iterate through our new files.
 
 AHA, we have a hit on our first one:
 
-```
+```text
 dessicated_head_decomposing_body
 Katrina blinks awake, seeming a bit shocked ot be waking up again
 'Oh! hello there! just before the lights went out I was working with Ichabod and Brom to get rid of that pesky horseman for good!'
@@ -283,7 +283,7 @@ and TADA we can now import them into ghidra
 
 Our first real function is `Katrina`. The first thing i see is the stack_chk_fail, so I mark the stack_canary and get it out of the way. After the strings loaded in, we can easily see that the byte array is the expected encryption_key.
 
-<Spongebob 5 hours later meme.jpg>... after entirely too long reading through the binary I decided to re-read the prompt, and noticed the clue about the Home Town. After some quick OSINT (google), we find Katrina Van Tassel is from Sleepy Hollow. Entering this into the field results in `really_loves_`. Seems like we're done with Katrina
+`<Spongebob 5 hours later meme.jpg>`... after entirely too long reading through the binary I decided to re-read the prompt, and noticed the clue about the Home Town. After some quick OSINT (google), we find Katrina Van Tassel is from Sleepy Hollow. Entering this into the field results in `really_loves_`. Seems like we're done with Katrina
 
 ```text
 ❯ ./dessicated_head_decomposing_body
@@ -313,6 +313,7 @@ You see him shake his head.. 'though i'm not sure you screwed me back perfectly.
 ```
 
 entering the incorrect medicine results in:
+
 ```text
 Brom's eyes glaze over for a second and he writes down this number: 0xdeadbeef
 Brom shakes himself off again
@@ -324,7 +325,7 @@ This one seems to be less mythology based, so I dive into the binary.
 in the `brom` function there's an input, and a function that sets a `notValid` flag based on the input.
 this flag gets set if the value is not equal to `0x44414544 = DAED`
 
-The text seems to hint at an overflow exploit, but unfortunately, ghidra didn't decompile the function names properly, so we don't see if the input is succeptible. worth a shot though.
+The text seems to hint at an overflow exploit, but unfortunately, ghidra didn't decompile the function names properly, so we don't see if the input is susceptible. worth a shot though.
 
 We give the expected 20 chars and append DEAD (endian-ness), and huzzah we have the output of
 

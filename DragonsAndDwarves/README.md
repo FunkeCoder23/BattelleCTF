@@ -96,7 +96,7 @@ After running the command, we hit on a key triplet... unfortunately, Stash_Bronz
 
 We did incorrectly zip our `Dwarf_Message` the first time though, using `zipinfo` we can see that junk is zipped with `defX` or maximum compression `zip -9`. After rezipping Dwarf_Message, we'll try to crack it again
 
-# Aftermath
+## Aftermath
 
 I think the challenge is broken... No that's not an excuse, I was able to unzip the new Dwarf_Message completely, but I keep getting a deflate error on the `Stash`. After some googling, I *did* find someone who followed the same steps, got the exact same key triplet, and was successful - in 2017. Using their stash contents:
 

@@ -1,6 +1,6 @@
-[TOC]
-
 # Feed the Magical Goat
+
+[TOC]
 
 > Once upon a time, there was a little reverse engineer who found a special bell. When the bell was struck, they say a magical billy goat appeared looking for food. Everyone knows billy goats will eat anything, but this is all the little reverse engineer had lying around.
 
@@ -15,7 +15,7 @@
 
 ## First Thoughts
 
-So the clue hidden in here is `angr`, not quite a mispelling but a hint to a ["platform-agnostic binary analysis framework. "](https://github.com/angr/angr)
+So the clue hidden in here is `angr`, not quite a misspelling but a hint to a ["platform-agnostic binary analysis framework. "](https://github.com/angr/angr)
 
 ## Ghidra
 
